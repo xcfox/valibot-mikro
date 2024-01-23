@@ -1,0 +1,27 @@
+{
+	"name": "valibot-mikro",
+	"version": "0.1.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "vitest"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@biomejs/biome": "1.5.2",
+		"@mikro-orm/better-sqlite": "^6.0.5",
+		"@mikro-orm/core": "^6.0.5",
+		"@rollup/plugin-swc": "^0.3.0",
+		"@types/node": "^20.11.5",
+		"nanoid": "^5.0.4",
+		"reflect-metadata": "^0.2.1",
+		"typescript": "^5.3.3",
+		"valibot": "^0.26.0",
+		"vite": "^5.0.12",
+		"vite-node": "^1.2.1",
+		"vitest": "^1.2.1"
+	}
+}
