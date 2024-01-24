@@ -2,10 +2,13 @@ import { EntitySchema, OptionalProps, EntitySchemaMetadata } from "@mikro-orm/co
 import { ObjectSchema, BaseSchema, Output, Input } from "valibot"
 import { schemaEntityNameMap } from "../utils/schemaEntityNameMap"
 import { getProperties } from "./getProperties"
+import { BASE_REF } from "../utils/baseRef"
 
 export function toEntitySchema<T extends ObjectSchema<any>, Base = never>(
 	metaOrName: string | EntitySchemaMetadata<InferEntity<T>, Base>,
-	schema: T,
+	schema: T & {
+		[BASE_REF]?: BaseSchema
+	},
 ): EntitySchema<InferEntity<T>> {
 	const { name, meta } = (() => {
 		if (typeof metaOrName === "string") return { name: metaOrName, meta: undefined }
@@ -16,6 +19,9 @@ export function toEntitySchema<T extends ObjectSchema<any>, Base = never>(
 		throw new Error(`🚫 ${schema.type} schema is not supported! Please use an object schema`)
 	if (name == null) throw new Error("🚫 Entity schema must have a name!")
 	schemaEntityNameMap.set(schema, name)
+	if (schema[BASE_REF] != null) {
+		schemaEntityNameMap.set(schema[BASE_REF], name)
+	}
 	const properties = { ...getProperties(schema), ...meta?.properties }
 	return new EntitySchema({ ...meta, name, properties } as any)
 }

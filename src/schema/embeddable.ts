@@ -34,7 +34,7 @@ export type MikroEmbeddableSchema<
  *
  * @returns A Mikro Embeddable schema.
  */
-export function Embeddable<Owner = any, TGetter extends () => ObjectSchema<any> = () => any>(
+export function embeddable<Owner = any, TGetter extends () => ObjectSchema<any> = () => any>(
 	getter: TGetter,
 	meta?: Partial<Extract<EntitySchemaProperty<Output<ReturnType<TGetter>>, Owner>, { kind: "embedded" }>>,
 ): MikroEmbeddableSchema<Owner, TGetter> {

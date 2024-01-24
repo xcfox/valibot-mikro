@@ -1,13 +1,16 @@
-import { ObjectSchema, Output, BaseSchema } from "valibot"
+import { ObjectSchema, Output, BaseSchema, merge, object } from "valibot"
 import type { Ref, Collection, OptionalProps, EntitySchema, EntityMetadata } from "@mikro-orm/core"
 import { ReferenceSchema } from "../schema/reference"
 import { CollectionSchema } from "../schema/collection"
+import { BASE_REF } from "../utils/baseRef"
 
 export function withRelations<TFinal extends EntityEntries>(
 	base: LooseObjectSchema<ToLooseObjectEntries<OmitRelations<TFinal>>>,
 	entries: PickRelations<TFinal>,
 ): ObjectSchema<any, any, TFinal> {
-	return 0 as any
+	const result = merge([base as any, object(entries)]) as any
+	result[BASE_REF] = base
+	return result
 }
 
 // return
