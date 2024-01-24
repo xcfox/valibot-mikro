@@ -1,7 +1,7 @@
-import { actionOutput, type BaseSchema, type Input, type Output } from "valibot"
 import { EntitySchema, EntitySchemaProperty, Ref } from "@mikro-orm/core"
-import { getterEntityName } from "../utils/schemaEntityNameMap"
+import { type BaseSchema, type Input, type Output, actionOutput } from "valibot"
 import { InferEntity } from "../function/defineEntitySchema"
+import { getterEntityName } from "../utils/schemaEntityNameMap"
 
 /**
  * Mikro Reference schema type.

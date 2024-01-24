@@ -1,4 +1,4 @@
-import { EntitySchema, EntityName } from "@mikro-orm/core"
+import { EntityName, EntitySchema } from "@mikro-orm/core"
 import { BaseSchema } from "valibot"
 
 /** Mark a valibot schema with its corresponding mikro Entity schema name */

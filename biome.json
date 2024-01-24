@@ -14,7 +14,7 @@
 		"ignore": ["src/**/graphql/*.ts"]
 	},
 	"files": {
-		"ignore": ["node_modules/**/*"]
+		"ignore": ["node_modules/**/*", "dist/**/*"]
 	},
 	"javascript": {
 		"formatter": {

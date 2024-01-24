@@ -1,21 +1,21 @@
 import { EntitySchemaMetadata, EntitySchemaProperty } from "@mikro-orm/core"
 import {
-	ObjectSchema,
 	ArraySchema,
-	BlobSchema,
+	BaseSchema,
 	BigintSchema,
+	BlobSchema,
 	BooleanSchema,
 	DateSchema,
 	NonNullableSchema,
+	NonNullishSchema,
 	NonOptionalSchema,
 	NullableSchema,
 	NullishSchema,
-	OptionalSchema,
 	NumberSchema,
-	StringSchema,
-	BaseSchema,
+	ObjectSchema,
+	OptionalSchema,
 	Pipe,
-	NonNullishSchema,
+	StringSchema,
 } from "valibot"
 import { CollectionSchema } from "../schema/collection"
 import { ReferenceSchema } from "../schema/reference"

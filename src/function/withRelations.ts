@@ -1,7 +1,7 @@
-import { ObjectSchema, Output, BaseSchema, merge, object } from "valibot"
-import type { Ref, Collection, OptionalProps, EntitySchema, EntityMetadata } from "@mikro-orm/core"
-import { ReferenceSchema } from "../schema/reference"
+import type { Collection, EntityMetadata, EntitySchema, OptionalProps, Ref } from "@mikro-orm/core"
+import { BaseSchema, ObjectSchema, Output, merge, object } from "valibot"
 import { CollectionSchema } from "../schema/collection"
+import { ReferenceSchema } from "../schema/reference"
 import { BASE_REF } from "../utils/baseRef"
 
 export function withRelations<TFinal extends EntityEntries>(

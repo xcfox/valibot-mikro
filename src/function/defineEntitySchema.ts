@@ -1,8 +1,8 @@
-import { EntitySchema, OptionalProps, EntitySchemaMetadata } from "@mikro-orm/core"
-import { ObjectSchema, BaseSchema, Output, Input } from "valibot"
+import { EntitySchema, EntitySchemaMetadata, OptionalProps } from "@mikro-orm/core"
+import { BaseSchema, Input, ObjectSchema, Output } from "valibot"
+import { BASE_REF } from "../utils/baseRef"
 import { schemaEntityNameMap } from "../utils/schemaEntityNameMap"
 import { getProperties } from "./getProperties"
-import { BASE_REF } from "../utils/baseRef"
 
 export function defineEntitySchema<T extends ObjectSchema<any>, Base = never>(
 	metaOrName: string | EntitySchemaMetadata<InferEntity<T>, Base>,

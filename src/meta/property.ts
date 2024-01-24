@@ -1,6 +1,6 @@
+import { EntitySchemaProperty } from "@mikro-orm/core"
 import type { BaseValidation } from "valibot"
 import { actionOutput } from "valibot"
-import { EntitySchemaProperty } from "@mikro-orm/core"
 
 /**
  * Custom validation type.

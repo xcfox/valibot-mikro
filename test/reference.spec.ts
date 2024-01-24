@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest"
-import { object, string, optional, merge } from "valibot"
-import { InferEntity, property, defineEntitySchema, withRelations } from "../src"
-import { nanoid } from "nanoid"
-import { manyToOne } from "../src/schema/reference"
-import { oneToMany } from "../src/schema/collection"
 import { Collection, EntitySchema, MikroORM, Ref } from "@mikro-orm/better-sqlite"
+import { nanoid } from "nanoid"
+import { merge, object, optional, string } from "valibot"
+import { describe, expect, it } from "vitest"
+import { InferEntity, defineEntitySchema, property, withRelations } from "../src"
+import { oneToMany } from "../src/schema/collection"
+import { manyToOne } from "../src/schema/reference"
 
 describe("simple reference", () => {
 	const Breeder = defineEntitySchema(

@@ -1,21 +1,21 @@
-import { describe, expect, it } from "vitest"
+import { MikroORM } from "@mikro-orm/better-sqlite"
+import { nanoid } from "nanoid"
 import {
-	object,
-	string,
-	date,
-	number,
-	boolean,
 	array,
-	optional,
-	nullish,
-	nullable,
+	boolean,
+	date,
 	nonNullable,
 	nonNullish,
 	nonOptional,
+	nullable,
+	nullish,
+	number,
+	object,
+	optional,
+	string,
 } from "valibot"
-import { property, defineEntitySchema } from "../src"
-import { MikroORM } from "@mikro-orm/better-sqlite"
-import { nanoid } from "nanoid"
+import { describe, expect, it } from "vitest"
+import { defineEntitySchema, property } from "../src"
 
 describe("base schema", () => {
 	const GiraffeSchema = object({

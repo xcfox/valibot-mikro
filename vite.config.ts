@@ -1,5 +1,5 @@
-import { defineConfig } from "vite"
 import swc from "@rollup/plugin-swc"
+import { defineConfig } from "vite"
 
 export default defineConfig({
 	plugins: [
