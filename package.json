@@ -5,7 +5,7 @@
 	"keywords": ["valibot", "schema", "mikro-orm", "typescript", "orm"],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/fabian-hiller/valibot"
+		"url": "https://github.com/xcfox/valibot-mikro"
 	},
 	"author": "xcfox",
 	"license": "MIT",

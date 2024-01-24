@@ -22,6 +22,17 @@ const User = defineEntitySchema(
 - 📦 Simple and easy-to-use API
 
 ## Install
+It is assumed that you have already installed MikroORM, if not, please read the MikroORM [installation documentation](https://mikro-orm.io/docs/quick-start) first.
+```bash
+## use npm
+npm install valibot valibot-mikro
+
+## use yarn
+yarn add valibot valibot-mikro
+
+## use pnpm
+pnpm add valibot valibot-mikro
+```
 
 ## Usage
 
@@ -55,6 +66,7 @@ await em.flush();
 ```
 
 ### Composable entities
+Thanks to `valibot`, we can easily combine various entities: 
 ```TypeScript
 import { object, string, optional, nullable, date, merge, number } from "valibot"
 import { property, defineEntitySchema } from "valibot-mikro"
@@ -93,7 +105,6 @@ export const Flower = defineEntitySchema(
 		}),
 	]),
 )
-
 ```
 
 ### Add more metadata 
@@ -184,6 +195,9 @@ const Giraffe: EntitySchema<IGiraffe> = defineEntitySchema(
 ```
 In this example there are circular references to `Breeder` and `Giraffe`, and TypeScript can't infer their types correctly for us, so we need to manually declare the type of one of them and tell TypeScript that type.  
 In this example we declare `Giraffe`'s type as `IGiraffe` and mark the `Giraffe` as `EntitySchema<IGiraffe>`. In addition, we use the `withRelations` function to minimize boilerplate code.
-### Optional Properties
+
+
+### Optional or Nullable Properties
 #### Default values
 ### Enums
+Oops, it is not implemented yet
