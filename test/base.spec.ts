@@ -15,18 +15,20 @@ import {
 	string,
 } from "valibot"
 import { describe, expect, it } from "vitest"
-import { defineEntitySchema, property } from "../src"
+import { defineEntitySchema, primaryKey } from "../src"
 
 describe("base schema", () => {
-	const GiraffeSchema = object({
-		id: string([property({ primary: true })]),
-		name: string(),
-		birthday: date(),
-		height: number(),
-		isMale: boolean(),
-		favoriteFoods: array(string()),
-	})
-	const Giraffe = defineEntitySchema("Giraffe0", GiraffeSchema)
+	const Giraffe = defineEntitySchema(
+		"Giraffe0",
+		object({
+			id: string([primaryKey()]),
+			name: string(),
+			birthday: date(),
+			height: number(),
+			isMale: boolean(),
+			favoriteFoods: array(string()),
+		}),
+	)
 
 	it("should support base property", () => {
 		expect(Giraffe.meta.properties.id.primary).toBe(true)
@@ -40,7 +42,7 @@ describe("base schema", () => {
 
 describe("optional and nullable schema", () => {
 	const TestSchema = object({
-		id: string([property({ primary: true })]),
+		id: string([primaryKey()]),
 		field: string(),
 		optionalField: optional(string()),
 		nullishField: nullish(string()),
@@ -64,7 +66,7 @@ describe("optional and nullable schema", () => {
 
 describe("field with default value", () => {
 	const TestSchema = object({
-		id: optional(string([property({ primary: true })]), () => nanoid()),
+		id: optional(string([primaryKey()]), () => nanoid()),
 		field: string(),
 		optionalField: optional(string()),
 		optionalFieldWithDefault: optional(string([]), "hello"),

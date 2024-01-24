@@ -98,11 +98,21 @@ const propertyConverters: {
 
 function findMetaInPipe({ pipe }: { pipe?: Pipe<any> | undefined }): EntitySchemaProperty<any, any> | undefined {
 	if (pipe == null) return undefined
+
+	const list: EntitySchemaProperty<any, any>[] = []
+
 	for (const action of pipe) {
-		if ((action as any).type === "mikro-property") {
-			return (action as any).meta as EntitySchemaProperty<any, any>
+		if ((action as any).type === "mikro_property") {
+			list.push((action as any).meta)
 		}
 	}
+
+	if (list.length === 0) return undefined
+	let result: EntitySchemaProperty<any, any> = {} as any
+	for (const property of list) {
+		result = { ...result, ...property }
+	}
+	return result
 }
 
 function onCreateByDefault(default_: any) {

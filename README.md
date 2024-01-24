@@ -6,7 +6,7 @@ Defining [MikroORM](https://mikro-orm.io/) [entities](https://mikro-orm.io/docs/
 const User = defineEntitySchema(
 	"User",
 	object({
-		id: number([property({ primary: true })]),
+		id: number([primaryKey()]),
 		name: string(),
 		address: oneToOne(() => Address),
 		cars: manyToMany(() => Car),
@@ -44,12 +44,12 @@ Here we define a `User` entity with `Valibot` and `Valibot-Mikro`:
 
 ```TypeScript
 import { object, string, optional } from "valibot"
-import { defineEntitySchema, property, InferEntity } from "valibot-mikro"
+import { defineEntitySchema, primaryKey } from "valibot-mikro"
 
 export const User = defineEntitySchema(
 	"User",
 	object({
-		id: number([property({ primary: true })]),
+		id: number([primaryKey()]),
 		fullName: string(),
 		email: string(),
 		password: string(),
@@ -69,10 +69,10 @@ await em.flush();
 Thanks to `valibot`, we can easily combine various entities: 
 ```TypeScript
 import { object, string, optional, nullable, date, merge, number } from "valibot"
-import { property, defineEntitySchema } from "valibot-mikro"
+import { primaryKey, property, defineEntitySchema } from "valibot-mikro"
 
 const BaseEntity = object({
-	id: number([property({ primary: true })]),
+	id: number([primaryKey()]),
 	createdAt: date(),
 	updatedAt: date([property({ onUpdate: () => new Date() })]),
 })
@@ -113,12 +113,12 @@ The `defineEntitySchema` method can take same options as `EntitySchema` construc
 
 ```TypeScript
 import { object, string, number } from "valibot"
-import { defineEntitySchema, property } from "valibot-mikro"
+import { defineEntitySchema, primaryKey } from "valibot-mikro"
 
 export const User = defineEntitySchema(
 	{ name: "User", tableName: "user_table", indexes: [{ properties: ["email"] }] },
 	object({
-		id: number([property({ primary: true })]),
+		id: number([primaryKey()]),
 		fullName: string(),
 		email: string(),
 		password: string(),
@@ -130,12 +130,12 @@ Let's see how easy it is to define relationships:
 
 ```TypeScript
 import { object, string, number } from "valibot"
-import { defineEntitySchema, property, manyToOne } from "valibot-mikro"
+import { defineEntitySchema, primaryKey, manyToOne } from "valibot-mikro"
 
 const Breeder = defineEntitySchema(
 	"Breeder",
 	object({
-		id: number([property({ primary: true })]),
+		id: number([primaryKey()]),
 		name: string(),
 	}),
 )
@@ -143,7 +143,7 @@ const Breeder = defineEntitySchema(
 const Giraffe = defineEntitySchema(
 	"Giraffe",
 	object({
-		id: number([property({ primary: true })]),
+		id: number([primaryKey()]),
 		name: string(),
 		breeder: manyToOne(() => Breeder),
 	}),
@@ -167,19 +167,19 @@ So when we encounter circular references, we need to give TypeScript a hand by t
 ```TypeScript
 import { object, string, number } from "valibot"
 import { EntitySchema } from "@mikro/core"
-import { defineEntitySchema, property, manyToOne, withRelations, InferEntity } from "valibot-mikro"
+import { defineEntitySchema, primaryKey, manyToOne, withRelations, InferEntity } from "valibot-mikro"
 
 const Breeder = defineEntitySchema(
 	"Breeder",
 	object({
-		id: optional(string([property({ primary: true })]), () => nanoid()),
+		id: optional(string([primaryKey()]), () => nanoid()),
 		name: string(),
 		giraffes: oneToMany(() => Giraffe, { mappedBy: "breeder" }),
 	}),
 )
 
 const GiraffeSchema = object({
-	id: optional(string([property({ primary: true })]), () => nanoid()),
+	id: optional(string([primaryKey()]), () => nanoid()),
 	name: string(),
 })
 
