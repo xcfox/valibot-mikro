@@ -108,6 +108,20 @@ export const Flower = defineEntitySchema(
 ```
 
 ### Add more metadata 
+For some special properties, we need to add more meta information，this is where we need to use `property()`. For example, add the `onUpdate` hook for `updatedAt`:
+```TypeScript
+import { date, number, object, optional } from "valibot"
+import { defineEntitySchema, primaryKey, property } from "valibot-mikro"
+
+export const BaseEntity = defineEntitySchema(
+	"BaseEntity",
+	object({
+		id: number([primaryKey()]),
+		createdAt: optional(date(), () => new Date()),
+		updatedAt: optional(date([property({ onUpdate: () => new Date() })]), () => new Date()),
+	}),
+)
+```
 
 The `defineEntitySchema` method can take same options as `EntitySchema` constructor. For example, we can add `tableName` to the `User` entity:
 
@@ -198,6 +212,40 @@ In this example we declare `Giraffe`'s type as `IGiraffe` and mark the `Giraffe`
 
 
 ### Optional or Nullable Properties
+To define a nullable property, which means that the database is allowed to store null values, we can use `nullable()` or `nullish()`:
+```TypeScript
+import { nullable, nullish, number, object, string } from "valibot"
+import { defineEntitySchema, primaryKey } from "valibot-mikro"
+
+export const Flower = defineEntitySchema(
+	"Flower",
+	object({
+		id: number([primaryKey()]),
+		variety: nullish(string(), "iris"),
+		color: nullable(string()),
+	}),
+)
+```
+
 #### Default values
+In some scenarios where we don't need to store a null value in the database, but simply need a default value, we use `optional()`. The most common use case is `createdAt`:
+```TypeScript
+import { optional, date, object, string } from "valibot"
+import { defineEntitySchema, primaryKey } from "valibot-mikro"
+
+export const User = defineEntitySchema(
+	"User",
+	object({
+		id: number([primaryKey()]),
+		createdAt: optional(date(), () => new Date()),
+		fullName: string(),
+		email: string(),
+		password: string(),
+	}),
+)
+```
+
+> `valibot-mikro` use [onInit](https://mikro-orm.io/docs/events#hooks) hook under the hood to set the default values.
+
 ### Enums
 Oops, it is not implemented yet

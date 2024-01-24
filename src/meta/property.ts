@@ -3,7 +3,7 @@ import type { BaseValidation } from "valibot"
 import { actionOutput } from "valibot"
 
 /**
- * Custom validation type.
+ * Mikro property meta.
  */
 export type PropertyMeta<Entity = any, TInput = any> = BaseValidation<TInput> & {
 	/**
