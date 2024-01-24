@@ -1,4 +1,4 @@
-import { EntitySchema, EntitySchemaMetadata, OptionalProps } from "@mikro-orm/core"
+import { EntitySchema, EntitySchemaMetadata, EventArgs, OptionalProps } from "@mikro-orm/core"
 import { BaseSchema, Input, ObjectSchema, Output } from "valibot"
 import { BASE_REF } from "../utils/baseRef"
 import { schemaEntityNameMap } from "../utils/schemaEntityNameMap"
@@ -15,15 +15,34 @@ export function defineEntitySchema<T extends ObjectSchema<any>, Base = never>(
 		const name = metaOrName.name ?? metaOrName.class?.name
 		return { name, meta: metaOrName }
 	})()
+
+	// check schema if it is an object schema
 	if (schema.type !== "object")
 		throw new Error(`🚫 ${schema.type} schema is not supported! Please use an object schema`)
 	if (name == null) throw new Error("🚫 Entity schema must have a name!")
+
+	// register schema name
 	schemaEntityNameMap.set(schema, name)
 	if (schema[BASE_REF] != null) {
 		schemaEntityNameMap.set(schema[BASE_REF], name)
 	}
-	const properties = { ...getProperties(schema), ...meta?.properties }
-	return new EntitySchema({ ...meta, name, properties } as any)
+
+	const [propertiesFromSchema, defaultValueMap] = getProperties(schema)
+	const properties: any = { ...propertiesFromSchema, ...meta?.properties }
+
+	// set default value to properties on init
+	const hooks = meta?.hooks ?? {}
+	const onInit = hooks.onInit ?? []
+	onInit.unshift(({ entity }: EventArgs<any>) => {
+		for (const [key, defaultValue] of defaultValueMap) {
+			if (entity[key] === undefined) {
+				const value = typeof defaultValue === "function" ? defaultValue() : defaultValue
+				entity[key] = value
+			}
+		}
+	})
+	hooks.onInit = onInit
+	return new EntitySchema({ ...meta, hooks, name, properties })
 }
 
 export type InferEntity<T extends BaseSchema | EntitySchema> = T extends BaseSchema

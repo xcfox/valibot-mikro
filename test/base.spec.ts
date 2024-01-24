@@ -80,17 +80,25 @@ describe("field with default value", () => {
 	})
 	const TestEntity = defineEntitySchema("Test02", TestSchema)
 
-	it("should support optional property with default value", () => {
-		expect(TestEntity.meta.properties.field.default).toBe(undefined)
-		expect(TestEntity.meta.properties.optionalField.onCreate).toBeUndefined()
-		expect(TestEntity.meta.properties.nullishField.onCreate).toBeUndefined()
-		expect(TestEntity.meta.properties.nullableField.onCreate).toBeUndefined()
-		expect(TestEntity.meta.properties.optionalFieldWithDefault.onCreate).toBeDefined()
-		expect(TestEntity.meta.properties.nullishFieldWithDefault.onCreate).toBeDefined()
-		expect(TestEntity.meta.properties.nullableFieldWithDefault.onCreate).toBeDefined()
-		expect(TestEntity.meta.properties.optionalFieldWithDefaultCallback.onCreate).toBeDefined()
-		expect(TestEntity.meta.properties.nullishFieldWithDefaultCallback.onCreate).toBeDefined()
-		expect(TestEntity.meta.properties.nullableFieldWithDefaultCallback.onCreate).toBeDefined()
+	it("should support optional property with default value", async () => {
+		const orm = await MikroORM.init({
+			entities: [TestEntity],
+			dbName: ":memory:",
+		})
+		await orm.schema.updateSchema()
+		const em = orm.em.fork()
+		const test = em.create(TestEntity, { field: "hello" })
+
+		expect(test.field).toBe("hello")
+		expect(test.optionalField).toBe(undefined)
+		expect(test.optionalFieldWithDefault).toBe("hello")
+		expect(test.optionalFieldWithDefaultCallback).toBe("hello")
+		expect(test.nullishField).toBe(undefined)
+		expect(test.nullishFieldWithDefault).toBe("hello")
+		expect(test.nullishFieldWithDefaultCallback).toBe("hello")
+		expect(test.nullableField).toBe(undefined)
+		expect(test.nullableFieldWithDefault).toBe("hello")
+		expect(test.nullableFieldWithDefaultCallback).toBe("hello")
 	})
 
 	it("should support omitting default value", async () => {
