@@ -4,7 +4,7 @@ import { schemaEntityNameMap } from "../utils/schemaEntityNameMap"
 import { getProperties } from "./getProperties"
 import { BASE_REF } from "../utils/baseRef"
 
-export function toEntitySchema<T extends ObjectSchema<any>, Base = never>(
+export function defineEntitySchema<T extends ObjectSchema<any>, Base = never>(
 	metaOrName: string | EntitySchemaMetadata<InferEntity<T>, Base>,
 	schema: T & {
 		[BASE_REF]?: BaseSchema

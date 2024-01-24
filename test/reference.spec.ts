@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { object, string, optional, merge } from "valibot"
-import { InferEntity, property, toEntitySchema, withRelations } from "../src"
+import { InferEntity, property, defineEntitySchema, withRelations } from "../src"
 import { nanoid } from "nanoid"
 import { manyToOne } from "../src/schema/reference"
 import { oneToMany } from "../src/schema/collection"
@@ -18,8 +18,8 @@ describe("simple reference", () => {
 		breeder: manyToOne(() => BreederSchema),
 	})
 
-	const Breeder = toEntitySchema("Breeder", BreederSchema)
-	const Giraffe = toEntitySchema("Giraffe", GiraffeSchema)
+	const Breeder = defineEntitySchema("Breeder", BreederSchema)
+	const Giraffe = defineEntitySchema("Giraffe", GiraffeSchema)
 
 	it("should refer correctly ", async () => {
 		const orm = await MikroORM.init({
@@ -65,8 +65,8 @@ describe("circular reference", () => {
 		}),
 	])
 
-	const Breeder: EntitySchema<IBreeder> = toEntitySchema("Breeder", BreederSchema)
-	const Giraffe: EntitySchema<IGiraffe> = toEntitySchema("Giraffe", GiraffeSchema)
+	const Breeder: EntitySchema<IBreeder> = defineEntitySchema("Breeder", BreederSchema)
+	const Giraffe: EntitySchema<IGiraffe> = defineEntitySchema("Giraffe", GiraffeSchema)
 
 	interface IBreeder extends InferEntity<typeof BreederLonelySchema> {
 		giraffes: Collection<IGiraffe>
@@ -108,7 +108,7 @@ describe("circular reference withRelations", () => {
 		giraffes: oneToMany(() => Giraffe, { mappedBy: "breeder" }),
 	})
 
-	const Breeder = toEntitySchema("Breeder", BreederSchema)
+	const Breeder = defineEntitySchema("Breeder", BreederSchema)
 
 	const GiraffeSchema = object({
 		id: optional(string([property({ primary: true })]), () => nanoid()),
@@ -118,7 +118,7 @@ describe("circular reference withRelations", () => {
 	interface IGiraffe extends InferEntity<typeof GiraffeSchema> {
 		breeder: Ref<InferEntity<typeof Breeder>>
 	}
-	const Giraffe: EntitySchema<IGiraffe> = toEntitySchema(
+	const Giraffe: EntitySchema<IGiraffe> = defineEntitySchema(
 		"Giraffe",
 		withRelations<IGiraffe>(GiraffeSchema, {
 			breeder: manyToOne(() => Breeder),

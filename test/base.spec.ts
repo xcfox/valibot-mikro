@@ -13,7 +13,7 @@ import {
 	nonNullish,
 	nonOptional,
 } from "valibot"
-import { property, toEntitySchema } from "../src"
+import { property, defineEntitySchema } from "../src"
 import { MikroORM } from "@mikro-orm/better-sqlite"
 import { nanoid } from "nanoid"
 
@@ -26,7 +26,7 @@ describe("base schema", () => {
 		isMale: boolean(),
 		favoriteFoods: array(string()),
 	})
-	const Giraffe = toEntitySchema("Giraffe0", GiraffeSchema)
+	const Giraffe = defineEntitySchema("Giraffe0", GiraffeSchema)
 
 	it("should support base property", () => {
 		expect(Giraffe.meta.properties.id.primary).toBe(true)
@@ -49,7 +49,7 @@ describe("optional and nullable schema", () => {
 		nonNullishField: nonNullish(string()),
 		nonOptionalField: nonOptional(string()),
 	})
-	const TestEntity = toEntitySchema("Test01", TestSchema)
+	const TestEntity = defineEntitySchema("Test01", TestSchema)
 
 	it("should support optional property", () => {
 		expect(TestEntity.meta.properties.field.nullable).toBe(undefined)
@@ -76,7 +76,7 @@ describe("field with default value", () => {
 		nullableFieldWithDefault: nullable(string([]), "hello"),
 		nullableFieldWithDefaultCallback: nullable(string([]), () => "hello"),
 	})
-	const TestEntity = toEntitySchema("Test02", TestSchema)
+	const TestEntity = defineEntitySchema("Test02", TestSchema)
 
 	it("should support optional property with default value", () => {
 		expect(TestEntity.meta.properties.field.default).toBe(undefined)
