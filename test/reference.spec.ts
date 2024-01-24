@@ -7,19 +7,22 @@ import { oneToMany } from "../src/schema/collection"
 import { Collection, EntitySchema, MikroORM, Ref } from "@mikro-orm/better-sqlite"
 
 describe("simple reference", () => {
-	const BreederSchema = object({
-		id: optional(string([property({ primary: true })]), () => nanoid()),
-		name: string(),
-	})
+	const Breeder = defineEntitySchema(
+		"Breeder",
+		object({
+			id: optional(string([property({ primary: true })]), () => nanoid()),
+			name: string(),
+		}),
+	)
 
-	const GiraffeSchema = object({
-		id: optional(string([property({ primary: true })]), () => nanoid()),
-		name: string(),
-		breeder: manyToOne(() => BreederSchema),
-	})
-
-	const Breeder = defineEntitySchema("Breeder", BreederSchema)
-	const Giraffe = defineEntitySchema("Giraffe", GiraffeSchema)
+	const Giraffe = defineEntitySchema(
+		"Giraffe",
+		object({
+			id: optional(string([property({ primary: true })]), () => nanoid()),
+			name: string(),
+			breeder: manyToOne(() => Breeder),
+		}),
+	)
 
 	it("should refer correctly ", async () => {
 		const orm = await MikroORM.init({
@@ -102,13 +105,14 @@ describe("circular reference", () => {
 })
 
 describe("circular reference withRelations", () => {
-	const BreederSchema = object({
-		id: optional(string([property({ primary: true })]), () => nanoid()),
-		name: string(),
-		giraffes: oneToMany(() => Giraffe, { mappedBy: "breeder" }),
-	})
-
-	const Breeder = defineEntitySchema("Breeder", BreederSchema)
+	const Breeder = defineEntitySchema(
+		"Breeder",
+		object({
+			id: optional(string([property({ primary: true })]), () => nanoid()),
+			name: string(),
+			giraffes: oneToMany(() => Giraffe, { mappedBy: "breeder" }),
+		}),
+	)
 
 	const GiraffeSchema = object({
 		id: optional(string([property({ primary: true })]), () => nanoid()),

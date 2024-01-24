@@ -2,13 +2,13 @@
 	"name": "valibot-mikro",
 	"version": "0.1.0",
 	"description": "",
-	"main": "index.js",
+	"main": "src/index.ts",
 	"type": "module",
 	"scripts": {
 		"test": "vitest"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "xcfox",
 	"license": "ISC",
 	"devDependencies": {
 		"@biomejs/biome": "1.5.2",
