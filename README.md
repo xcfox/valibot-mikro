@@ -163,7 +163,7 @@ const Giraffe = defineEntitySchema(
 	}),
 )
 ```
-Defining relationships using `valibot-mikro` is similar to traditional method types. 
+Defining relationships using `valibot-mikro` is similar to traditional methods. 
 Here we have 6 methods to define relationships, four of which are the same as the traditional methods: 
 - `oneToOne`
 - `manyToOne`
@@ -176,7 +176,7 @@ and two methods that allow you to define relationships manually:
 
 #### Circular Reference
 TypeScript is generally able to derive types correctly for us, however, when it comes to circular references, TypeScript can't help.  
-So when we encounter circular references, we need to give TypeScript a hand by telling it the correct type:
+It's time to give TypeScript a hand by telling it the correct type:
 
 ```TypeScript
 import { object, string, number } from "valibot"
