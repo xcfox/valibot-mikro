@@ -7,16 +7,13 @@ import { getProperties } from "./getProperties"
 export function defineEntitySchema<T extends ObjectSchema<any> | ObjectEntries, Base = never>(
 	metaOrName:
 		| string
-		| EntitySchemaMetadata<
-				T extends ObjectSchema<any> ? InferEntity<T> : T extends ObjectEntries ? InferEntity<ObjectSchema<T>> : never,
-				Base
-		  >,
+		| (Omit<EntitySchemaMetadata<EnsureObjectSchema<T>, Base>, "properties"> & {
+				properties?: Partial<EntitySchemaMetadata<EnsureObjectSchema<T>, Base>["properties"]>
+		  }),
 	schema: T & {
 		[BASE_REF]?: BaseSchema
 	},
-): EntitySchema<
-	T extends ObjectSchema<any> ? InferEntity<T> : T extends ObjectEntries ? InferEntity<ObjectSchema<T>> : never
-> {
+): EntitySchema<EnsureObjectSchema<T>, Base> {
 	const { name, meta } = (() => {
 		if (typeof metaOrName === "string") return { name: metaOrName, meta: undefined }
 		const name = metaOrName.name ?? metaOrName.class?.name
@@ -52,6 +49,12 @@ export function defineEntitySchema<T extends ObjectSchema<any> | ObjectEntries, 
 function isObjectSchema(schema: any): schema is ObjectSchema<any> {
 	return schema.type === "object"
 }
+
+type EnsureObjectSchema<T extends ObjectSchema<any> | ObjectEntries> = T extends ObjectSchema<any>
+	? InferEntity<T>
+	: T extends ObjectEntries
+	  ? InferEntity<ObjectSchema<T>>
+	  : never
 
 export type InferEntity<T extends BaseSchema | EntitySchema> = T extends BaseSchema
 	? Output<T> & {

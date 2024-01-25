@@ -6,13 +6,15 @@ import {
 	BlobSchema,
 	BooleanSchema,
 	DateSchema,
+	EnumSchema,
+	RecursiveSchema,
+	PicklistSchema,
 	NonNullableSchema,
 	NonNullishSchema,
 	NonOptionalSchema,
 	NullableSchema,
 	NullishSchema,
 	NumberSchema,
-	ObjectSchema,
 	OptionalSchema,
 	Pipe,
 	StringSchema,
@@ -50,13 +52,15 @@ function getProperty(
 
 type CollectDefaultValue = (defaultValue: any) => void
 
-// TODO: picklist, enum_
 export type PresetSupportedSchemas =
 	| ArraySchema<any>
 	| BigintSchema
 	| BlobSchema
 	| BooleanSchema
 	| DateSchema
+	| EnumSchema<any>
+	| RecursiveSchema<any>
+	| PicklistSchema<any>
 	| NumberSchema
 	| StringSchema
 	| NonNullableSchema<any>
@@ -83,6 +87,9 @@ const propertyConverters: {
 	date: (schema) => ({ type: Date, ...findMetaInPipe(schema) }),
 	number: (schema) => ({ type: Number, ...findMetaInPipe(schema) }),
 	string: (schema) => ({ type: String, ...findMetaInPipe(schema) }),
+	picklist: (schema) => ({ type: String }),
+	enum: (schema) => ({ enum: true, items: () => schema.enum }),
+	recursive: (schema) => ({ ...findMetaInPipe(schema.getter()) }),
 	nullable: ({ wrapped, default: default_ }, collect) => {
 		collect(default_)
 		return { ...getProperty(wrapped, collect), nullable: true }

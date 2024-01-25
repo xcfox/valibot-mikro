@@ -255,4 +255,29 @@ export const User = defineEntitySchema("User", {
 > `valibot-mikro` use [onInit](https://mikro-orm.io/docs/events#hooks) hook under the hood to set the default values.
 
 ### Enums
-Oops, it is not implemented yet
+Just follow the valibot to define the enum:
+```TypeScript
+import { enum_, number } from "valibot"
+import { defineEntitySchema, primaryKey } from "valibot-mikro"
+
+export enum UserRole {
+	ADMIN = "admin",
+	USER = "user",
+}
+
+export const User = defineEntitySchema("User", {
+	id: number([primaryKey()]),
+	role: enum_(UserRole),
+})
+```
+
+In most scenarios, a [picklist](https://valibot.dev/api/picklist/) would be more concise:
+```TypeScript
+import { picklist, number } from "valibot"
+import { defineEntitySchema, primaryKey } from "valibot-mikro"
+
+export const User = defineEntitySchema("User", {
+	id: number([primaryKey()]),
+	role: picklist(["admin", "user"]),
+})
+```

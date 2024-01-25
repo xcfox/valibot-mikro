@@ -4,6 +4,8 @@ import {
 	array,
 	boolean,
 	date,
+	enum_,
+	picklist,
 	nonNullable,
 	nonNullish,
 	nonOptional,
@@ -118,5 +120,43 @@ describe("field with default value", () => {
 		expect(test.optionalFieldWithDefaultCallback).toBe("hello")
 		expect(test.nullishFieldWithDefaultCallback).toBe("hello")
 		expect(test.nullableFieldWithDefaultCallback).toBe("hello")
+	})
+})
+
+describe("schema with special type", () => {
+	it("should support enum", async () => {
+		enum Direction {
+			Left = 1,
+			Right = 2,
+		}
+		const EnumEntity = defineEntitySchema("EnumEntity", {
+			id: number([primaryKey()]),
+			enumField: enum_(Direction),
+		})
+		const orm = await MikroORM.init({
+			entities: [EnumEntity],
+			dbName: ":memory:",
+			debug: true,
+		})
+		await orm.schema.updateSchema()
+		const em = orm.em.fork()
+		em.create(EnumEntity, { enumField: Direction.Left })
+		await em.flush()
+	})
+
+	it("should support picklist", async () => {
+		const PicklistEntity = defineEntitySchema("PicklistEntity", {
+			id: number([primaryKey()]),
+			picklistField: picklist(["left", "right"]),
+		})
+		const orm = await MikroORM.init({
+			entities: [PicklistEntity],
+			dbName: ":memory:",
+			debug: true,
+		})
+		await orm.schema.updateSchema()
+		const em = orm.em.fork()
+		em.create(PicklistEntity, { picklistField: "left" })
+		await em.flush()
 	})
 })
