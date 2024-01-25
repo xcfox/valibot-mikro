@@ -4,7 +4,6 @@ import { BASE_REF } from "../utils/baseRef"
 import { schemaEntityNameMap } from "../utils/schemaEntityNameMap"
 import { getProperties } from "./getProperties"
 
-// TODO: 支持直接传入 TEntries extends ObjectEntries
 export function defineEntitySchema<T extends ObjectSchema<any> | ObjectEntries, Base = never>(
 	metaOrName:
 		| string
