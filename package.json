@@ -1,14 +1,8 @@
 {
 	"name": "valibot-mikro",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Defining MikroORM Entities with Valibot",
-	"keywords": [
-		"valibot",
-		"schema",
-		"mikro-orm",
-		"typescript",
-		"orm"
-	],
+	"keywords": ["valibot", "schema", "mikro-orm", "typescript", "orm"],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/xcfox/valibot-mikro"
@@ -30,9 +24,7 @@
 			}
 		}
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"peerDependencies": {
 		"@mikro-orm/core": ">=5.0.0",
 		"valibot": ">=0.25.0"
