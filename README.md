@@ -91,7 +91,7 @@ export const Flower = defineEntitySchema("Flower", {
 })
 ```
 
-We can also easily combine various entities : 
+We can also easily use `merge()` of `valibot` to combine entities: 
 ```TypeScript
 import { object, string, optional, nullable, date, merge, number } from "valibot"
 import { primaryKey, property, defineEntitySchema } from "valibot-mikro"
