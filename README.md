@@ -3,15 +3,12 @@
 Defining [MikroORM](https://mikro-orm.io/) [entities](https://mikro-orm.io/docs/defining-entities) with [Valibot](https://valibot.dev/)!
 
 ```TypeScript
-const User = defineEntitySchema(
-	"User",
-	object({
-		id: number([primaryKey()]),
-		name: string(),
-		address: oneToOne(() => Address),
-		cars: manyToMany(() => Car),
-	}),
-)
+const User = defineEntitySchema("User", {
+	id: number([primaryKey()]),
+	name: string(),
+	address: oneToOne(() => Address),
+	cars: manyToMany(() => Car),
+})
 ```
 
 ## Highlights
@@ -43,19 +40,16 @@ pnpm add valibot valibot-mikro
 Here we define a `User` entity with `Valibot` and `Valibot-Mikro`:
 
 ```TypeScript
-import { object, string, optional } from "valibot"
+import { number, string, optional } from "valibot"
 import { defineEntitySchema, primaryKey } from "valibot-mikro"
 
-export const User = defineEntitySchema(
-	"User",
-	object({
-		id: number([primaryKey()]),
-		fullName: string(),
-		email: string(),
-		password: string(),
-		bio: optional(string(),''),
-	}),
-)
+export const User = defineEntitySchema("User", {
+	id: number([primaryKey()]),
+	fullName: string(),
+	email: string(),
+	password: string(),
+	bio: optional(string(), ""),
+})
 ```
 
 We need to use `em.create()` method to create a new instance of the entity:
@@ -66,7 +60,38 @@ await em.flush();
 ```
 
 ### Composable entities
-Thanks to `valibot`, we can easily combine various entities: 
+We can easily use the [Spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax) to combine entities:
+```TypeScript
+import { string, nullable, date, number } from "valibot"
+import { primaryKey, property, defineEntitySchema } from "valibot-mikro"
+
+const BaseEntity = {
+	id: number([primaryKey()]),
+	createdAt: date(),
+	updatedAt: date([property({ onUpdate: () => new Date() })]),
+}
+
+const CanSale = {
+	prices: number([property({ columnType: "money" })]),
+	inventory: number([property({ columnType: "int" })]),
+}
+
+export const Book = defineEntitySchema("Book", {
+	...BaseEntity,
+	...CanSale,
+	title: string(),
+	author: string(),
+})
+
+export const Flower = defineEntitySchema("Flower", {
+	...BaseEntity,
+	...CanSale,
+	variety: string(),
+	color: nullable(string()),
+})
+```
+
+We can also easily combine various entities : 
 ```TypeScript
 import { object, string, optional, nullable, date, merge, number } from "valibot"
 import { primaryKey, property, defineEntitySchema } from "valibot-mikro"
@@ -113,14 +138,11 @@ For some special properties, we need to add more meta information，this is wher
 import { date, number, object, optional } from "valibot"
 import { defineEntitySchema, primaryKey, property } from "valibot-mikro"
 
-export const BaseEntity = defineEntitySchema(
-	"BaseEntity",
-	object({
-		id: number([primaryKey()]),
-		createdAt: optional(date(), () => new Date()),
-		updatedAt: optional(date([property({ onUpdate: () => new Date() })]), () => new Date()),
-	}),
-)
+export const BaseEntity = defineEntitySchema("BaseEntity", {
+	id: number([primaryKey()]),
+	createdAt: optional(date(), () => new Date()),
+	updatedAt: optional(date([property({ onUpdate: () => new Date() })]), () => new Date()),
+})
 ```
 
 The `defineEntitySchema` method can take same options as `EntitySchema` constructor. For example, we can add `tableName` to the `User` entity:
@@ -131,37 +153,31 @@ import { defineEntitySchema, primaryKey } from "valibot-mikro"
 
 export const User = defineEntitySchema(
 	{ name: "User", tableName: "user_table", indexes: [{ properties: ["email"] }] },
-	object({
+	{
 		id: number([primaryKey()]),
 		fullName: string(),
 		email: string(),
 		password: string(),
-	}),
+	},
 )
 ```
 ### Modeling Entity Relationships
 Let's see how easy it is to define relationships: 
 
 ```TypeScript
-import { object, string, number } from "valibot"
+import { string, number } from "valibot"
 import { defineEntitySchema, primaryKey, manyToOne } from "valibot-mikro"
 
-const Breeder = defineEntitySchema(
-	"Breeder",
-	object({
-		id: number([primaryKey()]),
-		name: string(),
-	}),
-)
+const Breeder = defineEntitySchema("Breeder", {
+	id: number([primaryKey()]),
+	name: string(),
+})
 
-const Giraffe = defineEntitySchema(
-	"Giraffe",
-	object({
-		id: number([primaryKey()]),
-		name: string(),
-		breeder: manyToOne(() => Breeder),
-	}),
-)
+const Giraffe = defineEntitySchema("Giraffe", {
+	id: number([primaryKey()]),
+	name: string(),
+	breeder: manyToOne(() => Breeder),
+})
 ```
 Defining relationships using `valibot-mikro` is similar to traditional methods. 
 Here we have 6 methods to define relationships, four of which are the same as the traditional methods: 
@@ -179,18 +195,15 @@ TypeScript is generally able to derive types correctly for us, however, when it 
 It's time to give TypeScript a hand by telling it the correct type:
 
 ```TypeScript
-import { object, string, number } from "valibot"
-import { EntitySchema } from "@mikro/core"
-import { defineEntitySchema, primaryKey, manyToOne, withRelations, InferEntity } from "valibot-mikro"
+import { object, string, optional } from "valibot"
+import { EntitySchema, Ref } from "@mikro-orm/core"
+import { defineEntitySchema, primaryKey, manyToOne, withRelations, InferEntity, oneToMany } from "valibot-mikro"
 
-const Breeder = defineEntitySchema(
-	"Breeder",
-	object({
-		id: optional(string([primaryKey()]), () => nanoid()),
-		name: string(),
-		giraffes: oneToMany(() => Giraffe, { mappedBy: "breeder" }),
-	}),
-)
+const Breeder = defineEntitySchema("Breeder", {
+	id: optional(string([primaryKey()]), () => nanoid()),
+	name: string(),
+	giraffes: oneToMany(() => Giraffe, { mappedBy: "breeder" }),
+})
 
 const GiraffeSchema = object({
 	id: optional(string([primaryKey()]), () => nanoid()),
@@ -214,35 +227,29 @@ In this example we declare `Giraffe`'s type as `IGiraffe` and mark the `Giraffe`
 ### Optional or Nullable Properties
 To define a nullable property, which means that the database is allowed to store null values, we can use `nullable()` or `nullish()`:
 ```TypeScript
-import { nullable, nullish, number, object, string } from "valibot"
+import { nullable, nullish, number, string } from "valibot"
 import { defineEntitySchema, primaryKey } from "valibot-mikro"
 
-export const Flower = defineEntitySchema(
-	"Flower",
-	object({
-		id: number([primaryKey()]),
-		variety: nullish(string(), "iris"),
-		color: nullable(string()),
-	}),
-)
+export const Flower = defineEntitySchema("Flower", {
+	id: number([primaryKey()]),
+	variety: nullish(string(), "iris"),
+	color: nullable(string()),
+})
 ```
 
 #### Default values
 In some scenarios where we don't need to store a null value in the database, but simply need a default value, we use `optional()`. The most common use case is `createdAt`:
 ```TypeScript
-import { optional, date, object, string } from "valibot"
+import { optional, date, string } from "valibot"
 import { defineEntitySchema, primaryKey } from "valibot-mikro"
 
-export const User = defineEntitySchema(
-	"User",
-	object({
-		id: number([primaryKey()]),
-		createdAt: optional(date(), () => new Date()),
-		fullName: string(),
-		email: string(),
-		password: string(),
-	}),
-)
+export const User = defineEntitySchema("User", {
+	id: number([primaryKey()]),
+	createdAt: optional(date(), () => new Date()),
+	fullName: string(),
+	email: string(),
+	password: string(),
+})
 ```
 
 > `valibot-mikro` use [onInit](https://mikro-orm.io/docs/events#hooks) hook under the hood to set the default values.

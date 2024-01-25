@@ -1,24 +1,29 @@
 import { EntitySchema, EntitySchemaMetadata, EventArgs, OptionalProps } from "@mikro-orm/core"
-import { BaseSchema, Input, ObjectSchema, Output } from "valibot"
+import { BaseSchema, Input, ObjectEntries, ObjectSchema, Output } from "valibot"
 import { BASE_REF } from "../utils/baseRef"
 import { schemaEntityNameMap } from "../utils/schemaEntityNameMap"
 import { getProperties } from "./getProperties"
 
-export function defineEntitySchema<T extends ObjectSchema<any>, Base = never>(
-	metaOrName: string | EntitySchemaMetadata<InferEntity<T>, Base>,
+// TODO: 支持直接传入 TEntries extends ObjectEntries
+export function defineEntitySchema<T extends ObjectSchema<any> | ObjectEntries, Base = never>(
+	metaOrName:
+		| string
+		| EntitySchemaMetadata<
+				T extends ObjectSchema<any> ? InferEntity<T> : T extends ObjectEntries ? InferEntity<ObjectSchema<T>> : never,
+				Base
+		  >,
 	schema: T & {
 		[BASE_REF]?: BaseSchema
 	},
-): EntitySchema<InferEntity<T>> {
+): EntitySchema<
+	T extends ObjectSchema<any> ? InferEntity<T> : T extends ObjectEntries ? InferEntity<ObjectSchema<T>> : never
+> {
 	const { name, meta } = (() => {
 		if (typeof metaOrName === "string") return { name: metaOrName, meta: undefined }
 		const name = metaOrName.name ?? metaOrName.class?.name
 		return { name, meta: metaOrName }
 	})()
 
-	// check schema if it is an object schema
-	if (schema.type !== "object")
-		throw new Error(`🚫 ${schema.type} schema is not supported! Please use an object schema`)
 	if (name == null) throw new Error("🚫 Entity schema must have a name!")
 
 	// register schema name
@@ -27,7 +32,7 @@ export function defineEntitySchema<T extends ObjectSchema<any>, Base = never>(
 		schemaEntityNameMap.set(schema[BASE_REF], name)
 	}
 
-	const [propertiesFromSchema, defaultValueMap] = getProperties(schema)
+	const [propertiesFromSchema, defaultValueMap] = getProperties(isObjectSchema(schema) ? schema.entries : schema)
 	const properties: any = { ...propertiesFromSchema, ...meta?.properties }
 
 	// set default value to properties on init
@@ -43,6 +48,10 @@ export function defineEntitySchema<T extends ObjectSchema<any>, Base = never>(
 	})
 	hooks.onInit = onInit
 	return new EntitySchema({ ...meta, hooks, name, properties })
+}
+
+function isObjectSchema(schema: any): schema is ObjectSchema<any> {
+	return schema.type === "object"
 }
 
 export type InferEntity<T extends BaseSchema | EntitySchema> = T extends BaseSchema

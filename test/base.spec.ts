@@ -18,24 +18,21 @@ import { describe, expect, it } from "vitest"
 import { defineEntitySchema, primaryKey } from "../src"
 
 describe("base schema", () => {
-	const Giraffe = defineEntitySchema(
-		"Giraffe0",
-		object({
-			id: string([primaryKey()]),
-			name: string(),
-			birthday: date(),
-			height: number(),
-			isMale: boolean(),
-			favoriteFoods: array(string()),
-		}),
-	)
+	const Giraffe = defineEntitySchema("Giraffe0", {
+		id: string([primaryKey()]),
+		name: string(),
+		birthday: date(),
+		height: number(),
+		isMale: boolean(),
+		favoriteFoods: array(string()),
+	})
 
 	it("should support base property", () => {
 		expect(Giraffe.meta.properties.id.primary).toBe(true)
-		expect(Giraffe.meta.properties.name.type).toBe("string")
-		expect(Giraffe.meta.properties.birthday.type).toBe("date")
-		expect(Giraffe.meta.properties.height.type).toBe("number")
-		expect(Giraffe.meta.properties.isMale.type).toBe("boolean")
+		expect(Giraffe.meta.properties.name.type).toBe(String)
+		expect(Giraffe.meta.properties.birthday.type).toBe(Date)
+		expect(Giraffe.meta.properties.height.type).toBe(Number)
+		expect(Giraffe.meta.properties.isMale.type).toBe(Boolean)
 		expect(Giraffe.meta.properties.favoriteFoods.type).toBe("array")
 	})
 })
@@ -65,7 +62,7 @@ describe("optional and nullable schema", () => {
 })
 
 describe("field with default value", () => {
-	const TestSchema = object({
+	const TestEntity = defineEntitySchema("Test02", {
 		id: optional(string([primaryKey()]), () => nanoid()),
 		field: string(),
 		optionalField: optional(string()),
@@ -78,7 +75,6 @@ describe("field with default value", () => {
 		nullableFieldWithDefault: nullable(string([]), "hello"),
 		nullableFieldWithDefaultCallback: nullable(string([]), () => "hello"),
 	})
-	const TestEntity = defineEntitySchema("Test02", TestSchema)
 
 	it("should support optional property with default value", async () => {
 		const orm = await MikroORM.init({

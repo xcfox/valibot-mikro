@@ -1,9 +1,8 @@
 import { EntityName, EntitySchema } from "@mikro-orm/core"
-import { BaseSchema } from "valibot"
+import { BaseSchema, ObjectEntries } from "valibot"
 
 /** Mark a valibot schema with its corresponding mikro Entity schema name */
-
-export const schemaEntityNameMap = new WeakMap<BaseSchema, string>()
+export const schemaEntityNameMap = new WeakMap<BaseSchema | ObjectEntries, string>()
 
 export function getterEntityName(getter: () => BaseSchema | EntitySchema): () => EntityName<any> {
 	return () => {

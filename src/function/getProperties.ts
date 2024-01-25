@@ -16,16 +16,17 @@ import {
 	OptionalSchema,
 	Pipe,
 	StringSchema,
+	ObjectEntries,
 } from "valibot"
 import { CollectionSchema } from "../schema/collection"
 import { ReferenceSchema } from "../schema/reference"
 
 export function getProperties(
-	schema: ObjectSchema<any>,
+	entries: ObjectEntries,
 ): [EntitySchemaMetadata<any, any>["properties"], defaultValueCollector: Map<string, any>] {
 	const properties = {} as any
 	const defaultValueCollector = new Map<string, any>()
-	Object.entries(schema.entries).map(([key, valueSchema]) => {
+	Object.entries(entries).map(([key, valueSchema]) => {
 		const collectDefaultValue = (defaultValue: any) => {
 			defaultValueCollector.set(key, defaultValue)
 		}
@@ -49,6 +50,7 @@ function getProperty(
 
 type CollectDefaultValue = (defaultValue: any) => void
 
+// TODO: picklist, enum_
 export type PresetSupportedSchemas =
 	| ArraySchema<any>
 	| BigintSchema

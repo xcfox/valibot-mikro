@@ -2,27 +2,21 @@ import { Collection, EntitySchema, MikroORM, Ref } from "@mikro-orm/better-sqlit
 import { nanoid } from "nanoid"
 import { merge, object, optional, string } from "valibot"
 import { describe, expect, it } from "vitest"
-import { InferEntity, defineEntitySchema, property, withRelations } from "../src"
+import { InferEntity, defineEntitySchema, primaryKey, property, withRelations } from "../src"
 import { oneToMany } from "../src/schema/collection"
 import { manyToOne } from "../src/schema/reference"
 
 describe("simple reference", () => {
-	const Breeder = defineEntitySchema(
-		"Breeder",
-		object({
-			id: optional(string([property({ primary: true })]), () => nanoid()),
-			name: string(),
-		}),
-	)
+	const Breeder = defineEntitySchema("Breeder", {
+		id: optional(string([primaryKey()]), () => nanoid()),
+		name: string(),
+	})
 
-	const Giraffe = defineEntitySchema(
-		"Giraffe",
-		object({
-			id: optional(string([property({ primary: true })]), () => nanoid()),
-			name: string(),
-			breeder: manyToOne(() => Breeder),
-		}),
-	)
+	const Giraffe = defineEntitySchema("Giraffe", {
+		id: optional(string([primaryKey()]), () => nanoid()),
+		name: string(),
+		breeder: manyToOne(() => Breeder),
+	})
 
 	it("should refer correctly ", async () => {
 		const orm = await MikroORM.init({
